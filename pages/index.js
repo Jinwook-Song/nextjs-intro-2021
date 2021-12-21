@@ -1,27 +1,9 @@
-import { useEffect, useState } from "react";
 import HeadTitle from "../components/headTitle";
-import Image from "next/image";
 
-const BASE_URL = "https://api.themoviedb.org/3";
-
-function Home() {
-  const [movies, setMovies] = useState();
-
-  const getPopularMovies = async () => {
-    const response = await fetch("/api/movies");
-    const { results } = await response.json();
-    setMovies(results);
-  };
-
-  useEffect(() => {
-    getPopularMovies();
-  }, []);
-  console.log(movies);
-
+function Home({ results: movies }) {
   return (
     <div className="container">
       <HeadTitle title={"Home"} />
-      {!movies && <h4>Loading...</h4>}
       {movies?.map((movie) => (
         <div className="movie" key={movie.id}>
           <img
@@ -56,6 +38,22 @@ function Home() {
       `}</style>
     </div>
   );
+}
+
+// getServerSideProps 함수명 변경 불가
+// Every in this codes, run on server (never client)
+// -> 이곳에서 API_KEY를 숨길 수 있음
+// 1. `getServerSideProps()` is called in the server
+// 2. Anything returned from `getServerSideProps()` is passed to the Page's Props.
+export async function getServerSideProps() {
+  const { results } = await (
+    await fetch(`http://localhost:3000/api/movies`)
+  ).json();
+  return {
+    props: {
+      results,
+    },
+  };
 }
 
 export default Home;
