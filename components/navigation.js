@@ -1,16 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 function Navigation() {
   const { pathname } = useRouter();
   return (
     <nav>
-      <Link href="/">
-        <a className={pathname === "/" ? "active" : ""}>Home</a>
-      </Link>
-      <Link href="/about">
-        <a className={pathname === "/about" ? "active" : ""}>About</a>
-      </Link>
+      <Image src="/vercel.svg" alt="Header Image" width={70} height={70} />
+      <div>
+        <Link href="/">
+          <a className={pathname === "/" ? "active" : ""}>Home</a>
+        </Link>
+        <Link href="/about">
+          <a className={pathname === "/about" ? "active" : ""}>About</a>
+        </Link>
+      </div>
       <style jsx>{`
         nav {
           display: flex;
