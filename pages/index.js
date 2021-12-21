@@ -21,6 +21,9 @@ function Home({ results: movies }) {
           padding: 20px;
           gap: 20px;
         }
+        .movie {
+          cursor: pointer;
+        }
         .movie img {
           max-width: 100%;
           border-radius: 12px;
@@ -29,7 +32,6 @@ function Home({ results: movies }) {
         }
         .movie:hover img {
           transform: scale(1.05) translateY(-10px);
-          cursor: pointer;
         }
         .movie h4 {
           font-size: 18px;

@@ -148,3 +148,175 @@ export default App;
 공통의 navigation bar, global style 적용에 용이하다.
 
 Component는 redering에 해당하는 Component이고, pageProps는 app.js에서 적용한 설정이다.
+
+---
+
+### Layout
+
+```jsx
+// components/layout.js
+
+import Navigation from "./navigation";
+
+function Layout({ children }) {
+  return (
+    <>
+      <Navigation />
+      <main>{children}</main>
+    </>
+  );
+}
+
+export default Layout;
+
+// pages/_app.js
+
+import Layout from "../components/layout";
+import "../styles/globals.css";
+
+function App({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+export default App;
+```
+
+\_app.js 에 많은 코드를 작성하는 것이 아닌 Layout component를 활용
+
+---
+
+### Head
+
+```jsx
+import Head from "next/head";
+
+function Home() {
+  return (
+    <div>
+      <Head>
+        <title>Home | Next Movies</title>
+      </Head>
+      <h2>Home</h2>
+    </div>
+  );
+}
+
+export default Home;
+```
+
+helmet이나 다른 라이브러리 필요없이 next/head를 사용하면 된다.
+
+```jsx
+// components/headTitle.js
+
+import Head from "next/head";
+
+function HeadTitle({ title }) {
+  return (
+    <Head>
+      <title>{title} | Next Movies</title>
+    </Head>
+  );
+}
+
+export default HeadTitle;
+```
+
+컴포넌트로 재사용
+
+SEO를 위해 head뿐만아니라 다양한 meta data를 추가할 수 있다.
+
+---
+
+### Image
+
+```jsx
+import Image from "next/image";
+
+function Navigation() {
+  return (
+      <Image src="/vercel.svg" alt="Header Image" width={70} height={70} /
+  );
+}
+
+export default Navigation;
+```
+
+Head와 마찬가지로 next/image를 사용한다.
+
+`vercel.svg` 파일은 public 폴더 내에 있는데 절대경로로 접근이 가능하다
+
+---
+
+### Redirects & Rewrites
+
+```jsx
+// next.config.js
+
+const API_KEY = process.env.API_KEY;
+
+module.exports = {
+  reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/old-pages/:path*",
+        destination: "/new-blog/:path*",
+        permanent: false,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/movies",
+        destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
+      },
+    ];
+  },
+};
+```
+
+Redirects의 경우 url을 변경 시키고 destination에 접근한다
+
+`/old-pages/:path*` 로의 접근시 `/new-blog/:path*`로 라우팅
+
+Rewrites의 경우 url을 변경 시키지 않고 destination에 접근한다.
+
+이를 통해 API_KEY를 노출시키지 않을 수 있음 (네트워크에서도 노출되지 않음)
+
+---
+
+### Server Side Rendering
+
+1. `getServerSideProps()` is called in the server
+2. Anything returned from `getServerSideProps()` is passed to the Page's Props.
+3. React take this props and hydrates
+
+```json
+function Home({ results}) {
+	return ()
+}
+
+export async function getServerSideProps() {
+  const { results } = await (
+    await fetch(`http://localhost:3000/api/movies`)
+  ).json();
+  return {
+    props: {
+      results,
+    },
+  };
+}
+
+export default Home;
+```
+
+이미 Sever에서 데이터를 fetching 하였기때문에 lodaing이 발생하지 않는다.
+
+대신 fetching 하는동안 아무것도 보여주지 않는다.
+
+따라서 CSR을하여 fetching하는동안 Loading을 보여줄지 선택사항이 된다.
