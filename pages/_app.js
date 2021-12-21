@@ -1,17 +1,11 @@
-import Navigation from "../components/navigation";
+import Layout from "../components/layout";
 import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
   return (
-    <>
-      <Navigation />
+    <Layout>
       <Component {...pageProps} />
-      <style jsx global>{`
-        a {
-          color: white;
-        }
-      `}</style>
-    </>
+    </Layout>
   );
 }
 export default App;
