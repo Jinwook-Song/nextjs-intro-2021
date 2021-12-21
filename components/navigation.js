@@ -6,17 +6,17 @@ function Navigation() {
   return (
     <nav>
       <Link href="/">
-        <a>Home</a>
+        <a className={pathname === "/" ? "active" : ""}>Home</a>
       </Link>
       <Link href="/about">
-        <a>About</a>
+        <a className={pathname === "/about" ? "active" : ""}>About</a>
       </Link>
       <style jsx>{`
-        nav {
-          background-color: teal;
-        }
         a {
           text-decoration: none;
+        }
+        .active {
+          color: tomato;
         }
       `}</style>
     </nav>
